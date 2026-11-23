@@ -8,7 +8,7 @@
 |---|---|
 | File | `soalpintar-tampertest-v2.1.apk` |
 | Ukuran | 5.460.360 bytes |
-| SHA-256 | `9b41c33b0996704bf1ccb9b3eeae1e53657bdde60ce030189267464f87c51b92` |
+| SHA-256 | `caf14a90fcfa4c19e076d7db2a82650c4fe34664e9686e7aad59fa3e0ca2927d` |
 | Package | `com.example.soalpintar` |
 | versionName / versionCode | `2.1` / `4` |
 | Label | `SoalPintar v.2.1` (sama seperti asli) |
@@ -33,14 +33,32 @@ unknown sources").
 
 ## Watermark
 
-Tampil di tengah layar, di layar token maupun layar ujian:
+Tampil di tengah layar, di layar token maupun layar ujian. Build yang ada di
+repo ini memakai placeholder:
 
 ```
 ┌──────────────────────┐
-│      MODIFIKASI      │
-│     TAMPER TEST      │
+│      NAMA ANDA       │
 └──────────────────────┘
 ```
+
+Ganti watermark cukup di **satu file**:
+
+`tamper-test/apk/watermark.txt`
+
+```
+NAMA ANDA
+```
+
+Contoh dua baris:
+
+```
+BAYU ALFATIR
+TAMPER TEST
+```
+
+`patch_apk.py` membaca file itu dan menaruhnya di kedua layout. Kalau file
+kosong/tidak ada, otomatis kembali ke `MODIFIKASI / TAMPER TEST`.
 
 Di dalam APK, watermark adalah `TextView` di:
 
@@ -75,7 +93,7 @@ Yang tetap berjalan: `validate-token`, buka `form_url`, `heartbeat`, deteksi
 # 1. decode
 java -jar apktool.jar d -f -o work soalpintar-v2-release.apk
 
-# 2. patch
+# 2. patch (watermark dibaca dari watermark.txt)
 python3 patch_apk.py work
 
 # 3. build

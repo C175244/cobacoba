@@ -32,6 +32,7 @@ tamper-test/
 ├── apk/
 │   ├── soalpintar-tampertest-v2.1.apk  ← APK siap instal (sudah ditandatangani)
 │   ├── patch_apk.py           ← patch smali/manifest/layout
+│   ├── watermark.txt          ← ganti teks watermark di sini
 │   └── README.md              ← hash, instal, build ulang
 ├── mock-server/
 │   └── server.py              ← API + Google-Form tiruan (opsional, 100% lokal)
@@ -42,6 +43,10 @@ tamper-test/
     ├── CHANGES.diff           ← diff lengkap original → modified
     └── AndroidManifest.xml    ← manifest "aplikasi biasa"
 ```
+
+Workflow build otomatis ada di `.github/workflows/build-tamper-apk.yml`.
+Ubah `tamper-test/apk/watermark.txt`, commit, lalu GitHub Actions akan
+menghasilkan APK baru sebagai artifact `tamper-apk`.
 
 ## APK siap instal
 

@@ -4,12 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       watermark:
-        description: ""
+        description: "Teks watermark (opsional; \\n untuk baris baru)"
         required: false
         default: ""
   push:
     branches: [main]
     paths:
+      - "tamper-test/apk/watermark.txt"
       - "tamper-test/apk/patch_apk.py"
       - "soalpintar-v2-release.apk"
       - ".github/workflows/build-tamper-apk.yml"
@@ -32,18 +33,7 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.watermark != '' }}
         env:
           WM_TEXT: ${{ inputs.watermark }}
-        run: |
-          python3 - <<'PY'
-          import os, re
-          from pathlib import Path
-          text = os.environ["WM_TEXT"].replace("\\n", "&#10;")
-          p = Path("tamper-test/apk/patch_apk.py")
-          s = p.read_text()
-          s2, n = re.subn(r'android:text="[^"]*"', f'android:text="{text}"', s, count=1)
-          if n != 1:
-              raise SystemExit("watermark pattern not found")
-          p.write_text(s2)
-          PY
+        run: printf '%s\n' "$WM_TEXT" | sed 's/\\n/\n/g' > tamper-test/apk/watermark.txt
 
       - name: Download tools
         run: |

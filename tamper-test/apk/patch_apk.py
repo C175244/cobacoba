@@ -17,7 +17,26 @@ import re
 import sys
 from pathlib import Path
 
-WM = 
+def watermark_xml() -> str:
+    path = Path(__file__).with_name("watermark.txt")
+    if path.exists():
+        lines = [line.strip() for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+        if lines:
+            return "&#10;".join(lines)
+    return "MODIFIKASI&#10;TAMPER TEST"
+
+
+def wm_view() -> str:
+    return (
+        f'        <TextView android:text="{watermark_xml()}" '
+        'android:textColor="#ffffffff" android:textSize="16.0sp" '
+        'android:textStyle="bold" android:gravity="center" '
+        'android:background="#99000000" android:padding="12.0dip" '
+        'android:layout_gravity="center" android:elevation="24.0dip" '
+        'android:clickable="false" android:focusable="false" '
+        'android:layout_width="wrap_content" android:layout_height="wrap_content" />'
+    )
+
 NOOP = "    .locals 0\n\n    return-void\n"
 
 
@@ -79,7 +98,7 @@ def patch_layouts(root: Path) -> None:
     s = exam.read_text()
     if s.count("    </FrameLayout>") != 1:
         raise SystemExit("[FAIL] activity_exam: jumlah </FrameLayout> tidak 1")
-    s = s.replace("    </FrameLayout>", WM + "\n    </FrameLayout>", 1)
+    s = s.replace("    </FrameLayout>", wm_view() + "\n    </FrameLayout>", 1)
     exam.write_text(s)
     print("[ok] layout: watermark di activity_exam")
 
@@ -97,7 +116,7 @@ def patch_layouts(root: Path) -> None:
     s = s.rstrip()
     if not s.endswith("</ScrollView>"):
         raise SystemExit("[FAIL] activity_main: tidak berakhir dengan </ScrollView>")
-    s = s[: -len("</ScrollView>")] + "</ScrollView>\n" + WM + "\n</FrameLayout>\n"
+    s = s[: -len("</ScrollView>")] + "</ScrollView>\n" + wm_view() + "\n</FrameLayout>\n"
     main.write_text(s)
     print("[ok] layout: watermark di activity_main")
 

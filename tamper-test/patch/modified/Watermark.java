@@ -20,6 +20,7 @@ import android.widget.TextView;
  *   app/src/main/java/com/example/soalpintar/Watermark.java
  */
 final class Watermark {
+    private static final String TEXT = "MODIFIKASI\nTAMPER TEST";
     private static final int BG = 0x99000000;
 
     private Watermark() {
