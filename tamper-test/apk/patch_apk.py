@@ -17,16 +17,7 @@ import re
 import sys
 from pathlib import Path
 
-WM = (
-    '        <TextView android:text="MODIFIKASI&#10;TAMPER TEST" '
-    'android:textColor="#ffffffff" android:textSize="16.0sp" '
-    'android:textStyle="bold" android:gravity="center" '
-    'android:background="#99000000" android:padding="12.0dip" '
-    'android:layout_gravity="center" android:elevation="24.0dip" '
-    'android:clickable="false" android:focusable="false" '
-    'android:layout_width="wrap_content" android:layout_height="wrap_content" />'
-)
-
+WM = 
 NOOP = "    .locals 0\n\n    return-void\n"
 
 
