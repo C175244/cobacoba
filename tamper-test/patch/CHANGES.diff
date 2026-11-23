@@ -1,0 +1,516 @@
+--- original/ExamActivity.java
++++ modified/ExamActivity.java
+@@ -168,46 +168,11 @@
+ 
+     /* JADX WARN: Type inference failed for: r4v1, types: [com.example.soalpintar.ExamActivity$4] */
+     private void bunyikanAlarm() {
+-        if (this.isAlarmPlaying || this.alarmTembus == null) {
+-            return;
+-        }
+-        this.isAlarmPlaying = true;
+-        final int streamMaxVolume = (int) (this.audioManager.getStreamMaxVolume(4) * 0.88d);
+-        this.audioManager.setStreamVolume(4, streamMaxVolume, 0);
+-        new CountDownTimer(5000L, 400L) { // from class: com.example.soalpintar.ExamActivity.4
+-            @Override // android.os.CountDownTimer
+-            public void onFinish() {
+-                ExamActivity.this.isAlarmPlaying = false;
+-                try {
+-                    ExamActivity.this.audioManager.setStreamVolume(4, ExamActivity.this.originalAlarmVolume, 0);
+-                } catch (Exception unused) {
+-                }
+-            }
+-
+-            @Override // android.os.CountDownTimer
+-            public void onTick(long j) {
+-                try {
+-                    ExamActivity.this.audioManager.setStreamVolume(4, streamMaxVolume, 0);
+-                    ExamActivity.this.alarmTembus.startTone(21, 400);
+-                } catch (Exception e) {
+-                    Log.e(ExamActivity.TAG, "Alarm tick error: " + e.getMessage());
+-                }
+-            }
+-        }.start();
++        // TAMPER TEST: tidak ada perubahan volume dan tidak ada bunyi alarm.
+     }
+ 
+     private void cekBukaBlokir() {
+-        if (!this.isBlocked || this.tokenCode == null) {
+-            return;
+-        }
+-        this.btnLanjutkan.setEnabled(false);
+-        this.blockStatus.setText("Memeriksa...");
+-        ExamApi.deviceStatus(this, this.tokenCode, new ExamApi.StatusCallback() { // from class: com.example.soalpintar.ExamActivity$$ExternalSyntheticLambda8
+-            @Override // com.example.soalpintar.ExamApi.StatusCallback
+-            public final void onResult(Boolean bool) {
+-                ExamActivity.this.m70lambda$cekBukaBlokir$16$comexamplesoalpintarExamActivity(bool);
+-            }
+-        });
++        // TAMPER TEST: tidak ada pemeriksaan status blokir.
+     }
+ 
+     /* JADX INFO: Access modifiers changed from: private */
+@@ -308,11 +273,7 @@
+             if (toneGenerator != null) {
+                 toneGenerator.release();
+             }
+-            this.audioManager.setStreamVolume(4, this.originalAlarmVolume, 0);
+-            if (this.isDeviceOwner) {
+-                ((DevicePolicyManager) getSystemService("device_policy")).setStatusBarDisabled(new ComponentName(this, (Class<?>) AdminReceiver.class), false);
+-            }
+-            stopLockTask();
++            // TAMPER TEST: tanpa perubahan volume, tanpa stopLockTask()/setStatusBarDisabled().
+         } catch (Exception e) {
+             Log.e(TAG, "lepasKunci error: " + e.getMessage());
+         }
+@@ -321,39 +282,9 @@
+ 
+     /* JADX INFO: Access modifiers changed from: private */
+     public void memicuPelanggaran(String str, String str2) {
+-        if (!this.isSafeExit && !this.isBlocked) {
+-            long elapsedRealtime = SystemClock.elapsedRealtime();
+-            if (elapsedRealtime - this.pelanggaranTerakhir >= JEDA_PELANGGARAN_MS) {
+-                this.pelanggaranTerakhir = elapsedRealtime;
+-                int i = this.jumlahPelanggaran + 1;
+-                this.jumlahPelanggaran = i;
+-                String str3 = this.tokenCode;
+-                if (str3 != null) {
+-                    DraftStore.setViolations(this, str3, i);
+-                }
+-                Log.w(TAG, "PELANGGARAN ke-" + this.jumlahPelanggaran + ": " + str2);
+-                bunyikanAlarm();
+-                int i2 = this.jumlahPelanggaran;
+-                if (i2 < this.maksPelanggaran) {
+-                    String str4 = this.tokenCode;
+-                    if (str4 != null) {
+-                        ExamApi.sendEvent(this, str4, "violation", str2, i2);
+-                    }
+-                    tampilkanBanner(str);
+-                    return;
+-                }
+-                suspendUjian();
+-                String str5 = this.tokenCode;
+-                if (str5 != null) {
+-                    ExamApi.sendEvent(this, str5, "block", str2, this.jumlahPelanggaran, new Runnable() { // from class: com.example.soalpintar.ExamActivity$$ExternalSyntheticLambda6
+-                        @Override // java.lang.Runnable
+-                        public final void run() {
+-                            ExamActivity.this.m71lambda$memicuPelanggaran$10$comexamplesoalpintarExamActivity();
+-                        }
+-                    });
+-                }
+-            }
+-        }
++        // TAMPER TEST: pelanggaran tidak dicatat, tidak dilaporkan,
++        // tidak ada alarm, banner, maupun overlay blokir.
++        Log.d(TAG, "TAMPER TEST: pelanggaran diabaikan (" + str2 + ")");
+     }
+ 
+     private void mulaiTimer(String str) {
+@@ -402,13 +333,7 @@
+     }
+ 
+     private void paksakembali() {
+-        try {
+-            ((ActivityManager) getSystemService("activity")).moveTaskToFront(getTaskId(), 1);
+-        } catch (Exception unused) {
+-            Intent intent = new Intent(this, (Class<?>) ExamActivity.class);
+-            intent.addFlags(131072);
+-            startActivity(intent);
+-        }
++        // TAMPER TEST: tidak memaksa pengguna kembali ke aplikasi.
+     }
+ 
+     /* JADX INFO: Access modifiers changed from: private */
+@@ -423,38 +348,12 @@
+ 
+     /* JADX INFO: Access modifiers changed from: private */
+     public void sembunyikanSystemUI() {
+-        View decorView = getWindow().getDecorView();
+-        decorView.setSystemUiVisibility(5894);
+-        decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() { // from class: com.example.soalpintar.ExamActivity$$ExternalSyntheticLambda12
+-            @Override // android.view.View.OnSystemUiVisibilityChangeListener
+-            public final void onSystemUiVisibilityChange(int i) {
+-                ExamActivity.this.m78lambda$sembunyikanSystemUI$8$comexamplesoalpintarExamActivity(i);
+-            }
+-        });
++        // TAMPER TEST: status/navigation bar dibiarkan normal.
+     }
+ 
+     private void setupKioskMode() {
+-        try {
+-            DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService("device_policy");
+-            ComponentName componentName = new ComponentName(this, (Class<?>) AdminReceiver.class);
+-            boolean isDeviceOwnerApp = devicePolicyManager.isDeviceOwnerApp(getPackageName());
+-            this.isDeviceOwner = isDeviceOwnerApp;
+-            if (isDeviceOwnerApp) {
+-                devicePolicyManager.setLockTaskPackages(componentName, new String[]{getPackageName()});
+-                devicePolicyManager.setStatusBarDisabled(componentName, true);
+-                try {
+-                    getWindow().addFlags(8192);
+-                } catch (Exception e) {
+-                    Log.w(TAG, "Split screen flag gagal: " + e.getMessage());
+-                }
+-                Log.d(TAG, "Device Owner aktif — kiosk mode penuh");
+-            } else {
+-                Log.w(TAG, "BUKAN Device Owner — jalankan: adb shell dpm set-device-owner " + getPackageName() + "/.AdminReceiver");
+-            }
+-            startLockTask();
+-        } catch (Exception e2) {
+-            Log.e(TAG, "setupKioskMode gagal: " + e2.getMessage());
+-        }
++        // TAMPER TEST: kiosk / lock task dimatikan sepenuhnya.
++        Log.d(TAG, "TAMPER TEST: setupKioskMode() dilewati");
+     }
+ 
+     private void setupWebView() {
+@@ -503,14 +402,7 @@
+     }
+ 
+     private void suspendUjian() {
+-        this.isBlocked = true;
+-        this.blokirTerkirim = false;
+-        runOnUiThread(new Runnable() { // from class: com.example.soalpintar.ExamActivity$$ExternalSyntheticLambda17
+-            @Override // java.lang.Runnable
+-            public final void run() {
+-                ExamActivity.this.m79lambda$suspendUjian$14$comexamplesoalpintarExamActivity();
+-            }
+-        });
++        // TAMPER TEST: tidak ada overlay blokir.
+     }
+ 
+     private void tampilkanBanner(final String str) {
+@@ -559,37 +451,8 @@
+ 
+     @Override // androidx.appcompat.app.AppCompatActivity, androidx.core.app.ComponentActivity, android.app.Activity, android.view.Window.Callback
+     public boolean dispatchKeyEvent(KeyEvent keyEvent) {
+-        int keyCode = keyEvent.getKeyCode();
+-        if (keyCode == 3) {
+-            if (keyEvent.getAction() == 0) {
+-                memicuPelanggaran("Tombol Home dikunci!", "Menekan tombol Home");
+-            }
+-            return true;
+-        }
+-        if (keyCode != 164) {
+-            if (keyCode == 187) {
+-                if (keyEvent.getAction() == 0) {
+-                    memicuPelanggaran("Recent Apps dikunci!", "Membuka Recent Apps");
+-                }
+-                return true;
+-            }
+-            switch (keyCode) {
+-                case 24:
+-                case 25:
+-                    break;
+-                case 26:
+-                    if (keyEvent.getAction() == 0) {
+-                        memicuPelanggaran("Tombol Power dikunci!", "Menekan tombol Power");
+-                    }
+-                    return true;
+-                default:
+-                    return super.dispatchKeyEvent(keyEvent);
+-            }
+-        }
+-        if (keyEvent.getAction() == 0) {
+-            memicuPelanggaran("Dilarang menekan tombol Volume!", "Menekan tombol Volume");
+-        }
+-        return true;
++        // TAMPER TEST: Home, Recent, Power, Volume, dan Back berfungsi normal.
++        return super.dispatchKeyEvent(keyEvent);
+     }
+ 
+     /* renamed from: lambda$cekBukaBlokir$15$com-example-soalpintar-ExamActivity, reason: not valid java name */
+@@ -642,12 +505,7 @@
+ 
+     /* renamed from: lambda$onMultiWindowModeChanged$6$com-example-soalpintar-ExamActivity, reason: not valid java name */
+     /* synthetic */ void m75x2530f8c7() {
+-        try {
+-            ((ActivityManager) getSystemService("activity")).moveTaskToFront(getTaskId(), 1);
+-        } catch (Exception e) {
+-            Log.e(TAG, "Gagal paksa keluar multi-window: " + e.getMessage());
+-        }
+-        sembunyikanSystemUI();
++        // TAMPER TEST: helper paksa-kembali dinonaktifkan.
+     }
+ 
+     /* renamed from: lambda$onWindowFocusChanged$9$com-example-soalpintar-ExamActivity, reason: not valid java name */
+@@ -747,11 +605,9 @@
+     @Override // androidx.fragment.app.FragmentActivity, androidx.activity.ComponentActivity, androidx.core.app.ComponentActivity, android.app.Activity
+     protected void onCreate(Bundle bundle) {
+         super.onCreate(bundle);
+-        getWindow().setFlags(8192, 8192);
+-        getWindow().addFlags(4719744);
++        getWindow().addFlags(128); // TAMPER TEST: hanya FLAG_KEEP_SCREEN_ON
+         setContentView(R.layout.activity_exam);
+-        sembunyikanSystemUI();
+-        setupKioskMode();
++        // TAMPER TEST: sembunyikanSystemUI() & setupKioskMode() dilewati.
+         AudioManager audioManager = (AudioManager) getSystemService("audio");
+         this.audioManager = audioManager;
+         this.originalAlarmVolume = audioManager.getStreamVolume(4);
+@@ -810,12 +666,8 @@
+         textView3.setText(stringExtra3);
+         String str = this.tokenCode;
+         if (str != null) {
+-            int violations = DraftStore.violations(this, str);
+-            this.jumlahPelanggaran = violations;
+-            if (violations >= this.maksPelanggaran) {
+-                this.jumlahPelanggaran = 0;
+-                DraftStore.setViolations(this, this.tokenCode, 0);
+-            }
++            this.jumlahPelanggaran = 0;
++            DraftStore.setViolations(this, str, 0);
+             this.pendingRestore = DraftStore.has(this, this.tokenCode);
+         }
+         if (stringExtra4 != null) {
+@@ -824,14 +676,15 @@
+         if (stringExtra != null) {
+             this.webView.loadUrl(stringExtra);
+         }
+-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) { // from class: com.example.soalpintar.ExamActivity.3
++        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(false) { // from class: com.example.soalpintar.ExamActivity.3
+             @Override // androidx.activity.OnBackPressedCallback
+             public void handleOnBackPressed() {
+-                ExamActivity.this.memicuPelanggaran("Tombol Kembali dikunci!", "Menekan tombol Kembali");
++                // TAMPER TEST: tombol Back normal (callback nonaktif).
+             }
+         });
+-        this.lockEnforceHandler.post(this.lockEnforceRunnable);
++        // TAMPER TEST: lockEnforceHandler tidak dijalankan.
+         this.heartbeatHandler.post(this.heartbeatRunnable);
++        Watermark.attach(this);
+     }
+ 
+     @Override // androidx.appcompat.app.AppCompatActivity, androidx.fragment.app.FragmentActivity, android.app.Activity
+@@ -853,74 +706,36 @@
+     @Override // androidx.fragment.app.FragmentActivity, androidx.activity.ComponentActivity, android.app.Activity
+     public void onMultiWindowModeChanged(boolean z) {
+         super.onMultiWindowModeChanged(z);
+-        if (!z || this.isSafeExit) {
+-            return;
+-        }
+-        memicuPelanggaran("Split screen / multi-window tidak diizinkan!", "Split screen / multi-window");
+-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { // from class: com.example.soalpintar.ExamActivity$$ExternalSyntheticLambda13
+-            @Override // java.lang.Runnable
+-            public final void run() {
+-                ExamActivity.this.m75x2530f8c7();
+-            }
+-        }, 300L);
++        // TAMPER TEST: split-screen / multi-window diizinkan.
+     }
+ 
+     @Override // androidx.fragment.app.FragmentActivity, android.app.Activity
+     protected void onPause() {
+         super.onPause();
+-        if (this.isSafeExit || this.isDialogOpen) {
+-            return;
+-        }
+-        paksakembali();
++        // TAMPER TEST: keluar aplikasi bukan pelanggaran.
+     }
+ 
+     @Override // androidx.fragment.app.FragmentActivity, android.app.Activity
+     protected void onResume() {
+         super.onResume();
+-        sembunyikanSystemUI();
+-        if (this.isSafeExit) {
+-            return;
+-        }
+-        try {
+-            startLockTask();
+-        } catch (Exception unused) {
+-        }
++        // TAMPER TEST: tanpa startLockTask() dan tanpa menyembunyikan system UI.
+     }
+ 
+     @Override // androidx.appcompat.app.AppCompatActivity, androidx.fragment.app.FragmentActivity, android.app.Activity
+     protected void onStop() {
+         super.onStop();
+-        if (this.isSafeExit || this.isDialogOpen) {
+-            return;
+-        }
+-        paksakembali();
++        // TAMPER TEST: keluar aplikasi bukan pelanggaran.
+     }
+ 
+     @Override // android.app.Activity
+     protected void onUserLeaveHint() {
+         super.onUserLeaveHint();
+-        if (this.isSafeExit || this.isDialogOpen) {
+-            return;
+-        }
+-        memicuPelanggaran("Terdeteksi keluar dari layar ujian!", "Keluar dari aplikasi (Home / Recent)");
+-        paksakembali();
++        // TAMPER TEST: Home / Recent tidak dianggap pelanggaran.
+     }
+ 
+     @Override // android.app.Activity, android.view.Window.Callback
+     public void onWindowFocusChanged(boolean z) {
+         super.onWindowFocusChanged(z);
+-        if (z) {
+-            sembunyikanSystemUI();
+-        } else {
+-            if (this.isSafeExit || this.isDialogOpen) {
+-                return;
+-            }
+-            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { // from class: com.example.soalpintar.ExamActivity$$ExternalSyntheticLambda0
+-                @Override // java.lang.Runnable
+-                public final void run() {
+-                    ExamActivity.this.m76xeaafcbce();
+-                }
+-            }, 500L);
+-        }
++        // TAMPER TEST: kehilangan fokus (overlay/aplikasi lain) bukan pelanggaran.
+     }
+ }
+--- original/AppConfig.java
++++ modified/AppConfig.java
+@@ -12,9 +12,12 @@
+ 
+ /* loaded from: classes.dex */
+ public final class AppConfig {
+-    private static final String[] ALLOWED_DOMAINS = {"solusiedu.id"};
++    private static final String[] ALLOWED_DOMAINS = {"solusiedu.id", "10.0.2.2", "localhost", "127.0.0.1"};
+     private static final String PREFS = "soalpintar_config";
+     private static final String PRODUCTION_API_BASE = "https://soalpintar.solusiedu.id/api/";
++    // TAMPER TEST: arahkan ke base API server Anda (wajib diakhiri "/api/").
++    // Untuk mock lokal di emulator, pakai: "http://10.0.2.2:8080/api/"
++    private static final String TEST_API_BASE = "https://soalpintar.solusiedu.id/api/";
+     private static final String TAG = "AppConfig";
+     public final String announcement;
+     public final String apiBase;
+@@ -43,14 +46,14 @@
+     }
+ 
+     public static String apiBase(Context context) {
+-        return isCustomTestBuild() ? "https://soalpintar.solusiedu.id/api/" : cached(context).apiBase;
++        return isCustomTestBuild() ? TEST_API_BASE : cached(context).apiBase;
+     }
+ 
+     public static AppConfig cached(Context context) {
+         try {
+-            return new AppConfig(new JSONObject(prefs(context).getString("config_json", "{}")), "https://soalpintar.solusiedu.id/api/");
++            return new AppConfig(new JSONObject(prefs(context).getString("config_json", "{}")), TEST_API_BASE);
+         } catch (Exception unused) {
+-            return new AppConfig(new JSONObject(), "https://soalpintar.solusiedu.id/api/");
++            return new AppConfig(new JSONObject(), TEST_API_BASE);
+         }
+     }
+ 
+@@ -87,7 +90,8 @@
+     }
+ 
+     private static boolean isCustomTestBuild() {
+-        return false;
++        // TAMPER TEST: paksa memakai TEST_API_BASE, jangan pernah ke produksi.
++        return true;
+     }
+ 
+     static /* synthetic */ void lambda$fetch$0(Context context, Callback callback, JSONObject jSONObject) {
+@@ -97,11 +101,8 @@
+ 
+     static /* synthetic */ void lambda$fetch$1(String str, boolean z, Context context, Callback callback, VolleyError volleyError) {
+         Log.w(TAG, "app-config gagal dari " + str + ": " + volleyError);
+-        if (!z || str.equals("https://soalpintar.solusiedu.id/api/")) {
+-            callback.onConfig(cached(context));
+-        } else {
+-            fetch(context, "https://soalpintar.solusiedu.id/api/", false, callback);
+-        }
++        // TAMPER TEST: jangan pernah fallback ke server produksi.
++        callback.onConfig(cached(context));
+     }
+ 
+     private static SharedPreferences prefs(Context context) {
+--- original/ExamApi.java
++++ modified/ExamApi.java
+@@ -166,13 +166,7 @@
+                     Log.w(ExamApi.TAG, str2 + " gagal: " + volleyError);
+                 }
+             });
+-            if (!"block".equals(str2) && !"complete".equals(str2)) {
+-                i2 = 2;
+-                jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(8000, i2, 1.5f));
+-                jsonObjectRequest.setShouldCache(false);
+-                queue(context).add(jsonObjectRequest);
+-            }
+-            i2 = 4;
++            i2 = ("block".equals(str2) || "complete".equals(str2)) ? 4 : 2;
+             jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(8000, i2, 1.5f));
+             jsonObjectRequest.setShouldCache(false);
+             queue(context).add(jsonObjectRequest);
+--- original/MainActivity.java
++++ modified/MainActivity.java
+@@ -449,6 +449,7 @@
+             }
+         });
+         tampilkanIdentitasTersimpan();
++        Watermark.attach(this);
+     }
+ 
+     @Override // androidx.fragment.app.FragmentActivity, android.app.Activity
+--- original/AdminReceiver.java
++++ modified/AdminReceiver.java
+@@ -16,9 +16,7 @@
+     @Override // android.app.admin.DeviceAdminReceiver
+     public void onEnabled(Context context, Intent intent) {
+         super.onEnabled(context, intent);
+-        try {
+-            ((DevicePolicyManager) context.getSystemService("device_policy")).setLockTaskPackages(new ComponentName(context, (Class<?>) AdminReceiver.class), new String[]{context.getPackageName()});
+-        } catch (Exception unused) {
+-        }
++        // TAMPER TEST: receiver ini tidak didaftarkan di manifest dan tidak
++        // menetapkan lock task policy apa pun.
+     }
+ }
+--- /dev/null
++++ modified/Watermark.java
+@@ -0,0 +1,51 @@
++package com.example.soalpintar;
++
++import android.app.Activity;
++import android.graphics.Color;
++import android.graphics.Typeface;
++import android.util.TypedValue;
++import android.view.Gravity;
++import android.view.ViewGroup;
++import android.widget.FrameLayout;
++import android.widget.TextView;
++
++/**
++ * Watermark tengah layar untuk build TAMPER TEST.
++ *
++ * Ini satu-satunya pembeda visual dari aplikasi asli. Dipasang dari:
++ *   - MainActivity.onCreate()  (layar token)
++ *   - ExamActivity.onCreate()  (layar ujian / WebView)
++ *
++ * Lokasi file di project asli:
++ *   app/src/main/java/com/example/soalpintar/Watermark.java
++ */
++final class Watermark {
++    private static final String TEXT = "MODIFIKASI\nTAMPER TEST";
++    private static final int BG = 0x99000000;
++
++    private Watermark() {
++    }
++
++    static void attach(Activity activity) {
++        TextView view = new TextView(activity);
++        view.setText(TEXT);
++        view.setTextColor(Color.WHITE);
++        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f);
++        view.setTypeface(Typeface.DEFAULT_BOLD);
++        view.setGravity(Gravity.CENTER);
++        view.setAlpha(0.9f);
++        view.setBackgroundColor(BG);
++        int pad = Math.round(12 * activity.getResources().getDisplayMetrics().density);
++        view.setPadding(pad, pad, pad, pad);
++        view.setClickable(false);
++        view.setFocusable(false);
++        view.setFocusableInTouchMode(false);
++        view.setElevation(24f);
++
++        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
++                ViewGroup.LayoutParams.WRAP_CONTENT,
++                ViewGroup.LayoutParams.WRAP_CONTENT,
++                Gravity.CENTER);
++        activity.addContentView(view, lp);
++    }
++}
