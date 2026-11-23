@@ -1,6 +1,6 @@
 # APK siap instal — TAMPER TEST
 
-> Build uji coba, **bukan** untuk produksi. Watermark tengah layar wajib ada.
+> Build uji coba, **bukan** untuk produksi. Watermark pojok kiri bawah wajib ada.
 
 ## Artefak
 
@@ -8,7 +8,7 @@
 |---|---|
 | File | `soalpintar-tampertest-v2.1.apk` |
 | Ukuran | 5.460.360 bytes |
-| SHA-256 | `caf14a90fcfa4c19e076d7db2a82650c4fe34664e9686e7aad59fa3e0ca2927d` |
+| SHA-256 | `f2b54e1ce18b8eba84eda5460c544de9104bbdcbeedd232c8f35715164e4f8ff` |
 | Package | `com.example.soalpintar` |
 | versionName / versionCode | `2.1` / `4` |
 | Label | `SoalPintar v.2.1` (sama seperti asli) |
@@ -33,41 +33,32 @@ unknown sources").
 
 ## Watermark
 
-Tampil di tengah layar, di layar token maupun layar ujian. Build yang ada di
-repo ini memakai placeholder:
+Hanya di halaman awal (input token), bukan di halaman ujian:
 
-```
-┌──────────────────────┐
-│      NAMA ANDA       │
-└──────────────────────┘
-```
+- teks: `mod`
+- warna: `#888888` (abu-abu)
+- ukuran: `3px`
+- posisi: pojok kiri bawah (`layout_gravity="bottom|start"`, margin `4dip`)
 
-Ganti watermark cukup di **satu file**:
+Ganti teks di **satu file**:
 
 `tamper-test/apk/watermark.txt`
 
 ```
-NAMA ANDA
+mod
 ```
 
-Contoh dua baris:
-
-```
-BAYU ALFATIR
-TAMPER TEST
-```
-
-`patch_apk.py` membaca file itu dan menaruhnya di kedua layout. Kalau file
-kosong/tidak ada, otomatis kembali ke `MODIFIKASI / TAMPER TEST`.
+`patch_apk.py` membaca file itu dan hanya menaruhnya di `activity_main.xml`.
+Kalau file kosong/tidak ada, otomatis kembali ke `MODIFIKASI / TAMPER TEST`.
 
 Di dalam APK, watermark adalah `TextView` di:
 
-- `res/layout/activity_main.xml` (dibungkus `FrameLayout`, `layout_gravity="center"`)
-- `res/layout/activity_exam.xml` (di dalam `FrameLayout` WebView, `layout_gravity="center"`)
+- `res/layout/activity_main.xml` (dibungkus `FrameLayout`, `layout_gravity="bottom|start"`)
 
-Di jalur source Android Studio, padanannya ada di
-`tamper-test/patch/modified/Watermark.java` dan dipanggil dari
-`MainActivity.onCreate()` + `ExamActivity.onCreate()`.
+Halaman ujian (`activity_exam.xml`) tidak diberi watermark.
+
+Jalur source Android Studio (`tamper-test/patch/modified/Watermark.java`) tidak
+dipakai oleh build APK ini.
 
 ## Yang diubah
 
@@ -82,7 +73,7 @@ Di jalur source Android Studio, padanannya ada di
 | `memicuPelanggaran`, `paksakembali`, `suspendUjian`, `cekBukaBlokir` | no-op |
 | `lambda$onMultiWindowModeChanged$6` | no-op — split-screen diizinkan |
 | `lepasKunci` | `setStreamVolume` dihapus |
-| Layout | watermark tengah layar |
+| Layout | watermark `mod` abu-abu 3px di pojok kiri bawah halaman token saja |
 
 Yang tetap berjalan: `validate-token`, buka `form_url`, `heartbeat`, deteksi
 "telah direkam", `POST complete`, timer, dan pemulihan draft.

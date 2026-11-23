@@ -29,10 +29,8 @@ def watermark_xml() -> str:
 def wm_view() -> str:
     return (
         f'        <TextView android:text="{watermark_xml()}" '
-        'android:textColor="#ffffffff" android:textSize="16.0sp" '
-        'android:textStyle="bold" android:gravity="center" '
-        'android:background="#99000000" android:padding="12.0dip" '
-        'android:layout_gravity="center" android:elevation="24.0dip" '
+        'android:textColor="#888888" android:textSize="3px" '
+        'android:layout_gravity="bottom|start" android:layout_margin="4dip" '
         'android:clickable="false" android:focusable="false" '
         'android:layout_width="wrap_content" android:layout_height="wrap_content" />'
     )
@@ -94,14 +92,6 @@ def patch_manifest(root: Path) -> None:
 
 
 def patch_layouts(root: Path) -> None:
-    exam = root / "res/layout/activity_exam.xml"
-    s = exam.read_text()
-    if s.count("    </FrameLayout>") != 1:
-        raise SystemExit("[FAIL] activity_exam: jumlah </FrameLayout> tidak 1")
-    s = s.replace("    </FrameLayout>", wm_view() + "\n    </FrameLayout>", 1)
-    exam.write_text(s)
-    print("[ok] layout: watermark di activity_exam")
-
     main = root / "res/layout/activity_main.xml"
     s = main.read_text()
     if s.count("<ScrollView") != 1:
